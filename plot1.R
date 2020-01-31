@@ -8,20 +8,9 @@ con <- file(pathtoload,"r") # open a connection to the file
 pathtowrite <- rstudioapi::getSourceEditorContext()$path
 pathtowrite <- gsub("plot1.R","subsetdata.txt",pathtowrite)
 
-
-#line <- readLines(con,n=2) # read 30 lines at a time into memory
-
-#con1 <- file(pathtowrite,"w") # open a connection to write to.
-
-#writeLines(line,con1,sep = "\n")
-#writeLines(line,con1,sep = "\n")
-#writeLines(line,con1,sep = "\n")
-#writeLines(line,con1,sep = "\n")
-
-#close(con1)
-#close(con)
-
-
+#=============Code to read line by line of the data and subset the data instead of loading the entire
+#============ DataFrame into memory, this approach is used to handle large data that cannot fit on 
+#============ out systems memory/RAM.
 
 if(file.exists(pathtowrite))
 {
@@ -44,7 +33,7 @@ if(file.exists(pathtowrite))
     
     if(charvec[1] == "Date")
     {
-      writeLines(line,con1,sep = "\n")
+      writeLines(line,con1,sep = "\n") # writeline into the file subsetdata.txt
     }
     else
     {
@@ -59,7 +48,7 @@ if(file.exists(pathtowrite))
       }
       if(formatDate == ymd("2007-02-01") | formatDate == ymd("2007-02-02"))
       {
-        writeLines(line,con1,sep = "\n")
+        writeLines(line,con1,sep = "\n") # writeline into the file subsetdata.txt
       }
       
     }
@@ -72,5 +61,18 @@ if(file.exists(pathtowrite))
   close(con1) 
   close(con) # close the connection to the file 
 }
+#============End of the code to subset the data
+
+
+# read the processed subsetted data:-
+readsubsetted <- read.csv(pathtowrite,header = TRUE,sep = ";")
+dim(readsubsetted) #2880 rows and 9 columns
+names(readsubsetted) # print the variable names
+
+png(filename = "plot1.png",width = 480,height = 480)
+with(readsubsetted,hist(Global_active_power,col = "Red",main = "Global Active Power",ylab = "Frequency",xlab="Global Active Power(kilowatts)"))
+dev.cur()
+dev.off()
+
 
 
