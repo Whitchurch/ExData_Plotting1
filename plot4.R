@@ -78,7 +78,7 @@ par(mfrow = c(2,2))
 datetimeobject <- as.POSIXct(paste(readsubsetted$Date, readsubsetted$Time), format="%d/%m/%Y %H:%M:%S")
 
 #Plot 1
-plot(datetimeobject,readsubsetted$Global_active_power,type = "l",ylab = "Global Active Power(kilowatts)",xlab = "")
+plot(datetimeobject,readsubsetted$Global_active_power,type = "l",ylab = "Global Active Power",xlab = "")
 
 #Plot 2
 plot(datetimeobject,readsubsetted$Voltage,type = "l",ylab = "Voltage",xlab = "datetime")
