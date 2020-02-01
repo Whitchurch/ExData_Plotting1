@@ -71,7 +71,6 @@ names(readsubsetted) # print the variable names
 
 png(filename = "plot1.png",width = 480,height = 480)
 with(readsubsetted,hist(Global_active_power,col = "Red",main = "Global Active Power",ylab = "Frequency",xlab="Global Active Power(kilowatts)"))
-dev.cur()
 dev.off()
 
 

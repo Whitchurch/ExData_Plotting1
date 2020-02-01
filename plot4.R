@@ -1,12 +1,12 @@
 
 #File path of Huge data file from which to read the data
 pathtoload <- rstudioapi::getSourceEditorContext()$path
-pathtoload <- gsub("plot3.R","household_power_consumption.txt",pathtoload)
+pathtoload <- gsub("plot4.R","household_power_consumption.txt",pathtoload)
 con <- file(pathtoload,"r") # open a connection to the file
 
 #File path of the subsetted newly created data file
 pathtowrite <- rstudioapi::getSourceEditorContext()$path
-pathtowrite <- gsub("plot3.R","subsetdata.txt",pathtowrite)
+pathtowrite <- gsub("plot4.R","subsetdata.txt",pathtowrite)
 
 #=============Code to read line by line of the data and subset the data instead of loading the entire
 #============ DataFrame into memory, this approach is used to handle large data that cannot fit on 
@@ -63,33 +63,28 @@ if(file.exists(pathtowrite))
 }
 #============End of the code to subset the data
 
-
 # read the processed subsetted data:-
 readsubsetted <- read.csv(pathtowrite,header = TRUE,sep = ";")
 dim(readsubsetted) #2880 rows and 9 columns
 names(readsubsetted) # print the variable names
 
-#combine date and time into a POSIX date time object, to be used for time series plots
+#Plot the all the graphs out to make sure we have everything we need for the
+# combined plot:
+png("plot4.png",width = 480,height = 480)
+#setup the layout for all 4 plots as: 2 rows 2 columns
+par(mfrow = c(2,2))
+
+#Generate the time axis for timeseries plots
 datetimeobject <- as.POSIXct(paste(readsubsetted$Date, readsubsetted$Time), format="%d/%m/%Y %H:%M:%S")
 
-Sub_metering_1 <- readsubsetted$Sub_metering_1 #This represents the energy submetering in  (in watt-hour of active energy). It corresponds to the kitchen, containing mainly a dishwasher, an oven and a microwave
+#Plot 1
+plot(datetimeobject,readsubsetted$Global_active_power,type = "l",ylab = "Global Active Power(kilowatts)",xlab = "")
 
-Sub_metering_2 <- readsubsetted$Sub_metering_2 # This represents the (in watt-hour of active energy). It corresponds to the laundry room, containing a washing-machine, a tumble-drier, a refrigerator and a light.
+#Plot 2
+plot(datetimeobject,readsubsetted$Voltage,type = "l",ylab = "Voltage",xlab = "datetime")
 
-Sub_metering_3 <- readsubsetted$Sub_metering_3 # This repreents the (in watt-hour of active energy). It corresponds to an electric water-heater and an air-conditioner.
 
-# there are no NAs r ? values
-sum(as.integer(is.na(Sub_metering_1)))
-sum(as.integer(is.na(Sub_metering_1)))
-sum(as.integer(is.na(Sub_metering_1)))
-
-grep("[?]",Sub_metering_1)
-grep("[?]",Sub_metering_2)
-grep("[?]",Sub_metering_3)
-
-#Now open a png graphic device to write this plot to
-png("plot3.png",width = 480, height = 480)
-
+#Plot3
 plot(datetimeobject,Sub_metering_1,col="Black", type = "l", ylab = "Energy sub metering", xlab = "")
 
 # use points to add on to the plot that is rendered
@@ -97,8 +92,15 @@ points(datetimeobject,Sub_metering_2,col="Red", type = "l")
 points(datetimeobject,Sub_metering_3,col="Blue", type = "l")
 
 # add in the legends for the plot
-legend("topright",legend = c("Sub_metering_1","Sub_metering_2","Sub_metering_3"),col = c("black","red","blue"),lty = 1)
+legend("topright",legend = c("Sub_metering_1","Sub_metering_2","Sub_metering_3"),col = c("black","red","blue"),lty = 1,bty = "n")
+
+
+#Plot 4 
+plot(datetimeobject,readsubsetted$Global_reactive_power,type = "l",ylab = "Global_reactive_power",xlab = "datetime")
+
+#close the device, to geenrate the png file and close the current device for PNG
 dev.off()
+
 
 
 

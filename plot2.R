@@ -70,7 +70,7 @@ names(readsubsetted) # print the variable names
 datetimeobject <- as.POSIXct(paste(readsubsetted$Date, readsubsetted$Time), format="%d/%m/%Y %H:%M:%S")
 
 png("plot2.png",width = 480, height = 480)
-plot(datetimeobject,readsubsetted$Global_active_power,type = "l",ylab = "Global Active Power(kilowatts)")
+plot(datetimeobject,readsubsetted$Global_active_power,type = "l",ylab = "Global Active Power(kilowatts)",xlab = "")
 dev.off()
 
 
